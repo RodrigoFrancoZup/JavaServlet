@@ -1,4 +1,4 @@
-package gerenciador;
+package br.com.alura.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
