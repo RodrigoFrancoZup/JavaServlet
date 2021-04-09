@@ -3,6 +3,7 @@ package br.com.alura.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,6 +21,13 @@ public class ListaEmpresaServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		Banco banco = new Banco();
+		
+		RequestDispatcher rd = request.getRequestDispatcher("listaEmpresas.jsp");
+		request.setAttribute("empresas", banco.getAll());
+		rd.forward(request, response);
+		
+		
+		/*
 		PrintWriter out = response.getWriter();
 		out.println("<html>");
 		out.println("<body>");
@@ -31,6 +39,7 @@ public class ListaEmpresaServlet extends HttpServlet {
 		out.println("</ol>");
 		out.println("</body>");
 		out.println("</html>");
+		*/
 	}
 
 }
