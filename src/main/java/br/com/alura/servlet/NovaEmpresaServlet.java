@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.alura.banco.Banco;
+import br.com.alura.modelo.Empresa;
+
 @WebServlet("/novaEmpresa")
 public class NovaEmpresaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -16,9 +19,18 @@ public class NovaEmpresaServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String nome = request.getParameter("nome");
+		Empresa empresa = new Empresa();
+		Banco banco = new Banco();	
+		
+		empresa.setNome(request.getParameter("nome"));
+		banco.add(empresa);
+		
+
 		PrintWriter out = response.getWriter();
-		out.println("<html><body><h2>A empresa "+ nome +" foi cadastrada! </h2></body></html>");
+		out.println("<html><body><h2>A empresa "+ empresa.getNome() +" foi cadastrada! </h2></body></html>");
+
+		// PrintWriter out = response.getWriter();
+		// out.println("<html><body><h2>A empresa "+ nome +" foi cadastrada! </h2></body></html>");
 	}
 
 }
