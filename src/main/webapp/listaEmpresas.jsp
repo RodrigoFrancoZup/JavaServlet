@@ -13,7 +13,7 @@
 	<h2>Listagem de Todas Empresas Cadastradas:</h2>
 	<ul>
 		<c:forEach items="${empresas}" var="empresa">
-			<li>Id= ${empresa.id} - ${empresa.nome} - <fmt:formatDate value="${empresa.dataAbertura}" pattern="dd/mm/yyyy"/></li>		
+			<li>Id= ${empresa.id} - ${empresa.nome} - <fmt:formatDate value="${empresa.dataAbertura}" pattern="dd/mm/yyyy"/> <a href="alteraEmpresaForm?id=${empresa.id}">Alterar</a> <a href="deletaEmpresa?id=${empresa.id}">Deletar</a></li>		
 		</c:forEach>
 	</ul>
 	
