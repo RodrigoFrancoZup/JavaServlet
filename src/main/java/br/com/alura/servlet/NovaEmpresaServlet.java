@@ -44,10 +44,13 @@ public class NovaEmpresaServlet extends HttpServlet {
 		empresa.setDataAbertura(dataAbertura);
 		banco.add(empresa);
 		
-
-		RequestDispatcher rd = request.getRequestDispatcher("novaEmpresaCriada.jsp");
-		request.setAttribute("nomeEmpresa", empresa.getNome());
-		rd.forward(request, response);
+		// request.setAttribute("nomeEmpresa", empresa.getNome());
+		
+		// rd comentando pois ele gera o erro do F5!
+		// RequestDispatcher rd = request.getRequestDispatcher("/listaEmpresa");
+		//rd.forward(request, response);
+		
+		response.sendRedirect("listaEmpresa");
 
 		// PrintWriter out = response.getWriter();
 		// out.println("<html><body><h2>A empresa "+ nome +" foi cadastrada! </h2></body></html>");
