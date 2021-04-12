@@ -2,7 +2,6 @@ package br.com.alura.banco;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.alura.modelo.Empresa;
 
 public class Banco {
