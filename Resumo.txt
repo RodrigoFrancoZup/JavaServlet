@@ -1,0 +1,143 @@
+Capítulo 01 - Fundamentos da Web e a API de Servlet.
+	Nesse capítulo nós preparamos que:
+⦁	o ambiente de desenvolvimento com a instalação do JDK 11, da IDE Eclipse e do "Servidor" Apache TomCat 9;
+⦁	Criamos um projeto Java Web (Chamado no Eclipse de Dynamic Web Project) juntamente com seu arquivo web.xml;
+⦁	Aprendemos que podemos colocar páginas html estáticas dentro da pasta src/webapp (antes chamada de WebContent) e que podemos acessa-las com: localhost:8080/NomeDoProjeto/NomeDaPagina.html;
+⦁	Criamos uma Servlet e para isso basta criar uma classe Java que extends HttpServlet, pois vamos usar o protocolo HTTP;
+⦁	Aprendemos a definir a url que irá chamar o servlet com a anotação: @WebServlet(urlPatterns = "/oi")
+⦁	Para tratar as request devemos sobrescrever o método service, esse método possui uma referencia para request e outra para response;
+⦁	Utilizamos a referencia de response para responder a requsição, para isso criamos o objeto out do tipo PrtinWriter que irá receber a referencia de response.getWriter(). Depois disso podemos escrever o HTML de resposta com o objeto out, ex:
+		PrintWriter out = resp.getWriter();
+		out.println("<html>");
+		out.println("<body>");
+		out.println("<h2>Ola mundo Servlet</h2>");
+		out.println("<body>");
+		out.println("</html>");
+
+Obs: a pasta WebContent mencionada no curso foi substituida para src/webapp
+
+Capítulo 02 - Trabalhando com Post e Get
+Nesse capítulo nós aprendemos:
+⦁	Criar uma Servlet de maneira automazida, ou seja, no lugar clicar botao direito -> new -> class podemos fazer assim: botão direito na pasta -> new -> servlet;
+⦁	Aprendemos que estando no navegador podemos enviar parametros pela url, colocando assim: http://localhost:8080/gerenciador/novaEmpresa?nome=Alura&cnpj=123
+⦁	Na servlet utilizaremos a referencia req (request) para acessar esses atributos, para isso podemos fazer: String nome = req.getParameter("nome");
+⦁	Aprendemos que todos os atributos acessador pela referencia req (request) será do tipo String, logo a conversão será necessaria muitas vezes;
+⦁	Aprendemos resumidamente a diferença dos métodos GET e POST. Sendo o GET deixa os parametros visíveis na URL e o POST não. Usamos POST quando queremos modificar algo no servidor e GET para apenas consultar algo no servidor;
+⦁	Aprendemos que o metodo service herdado da classe mãe hettServlet aceita requisicoes do tipo GET e POST, se quisermos exigir o uso de um devemos substituí-lo por doPost ou doGet;
+⦁	Criamos o arquivo formNovaEmpresa.html que possuia um formulário para cadastro de nome de empresa. Esse formulário deve ser tratado por uma nova servlet.
+
+Capítulo 03 - Definindo o nosso modelo
+Nesse capítulo nós aprendemos/fizemos:
+⦁	Criamos a classe de negócio Empresa, ou seja, passamos a representar uma empresa, seus dados e ações através de um objeto Java do tipo Empresa;
+⦁	Criamos a classe Banco e nela uma lista static de empresas, essa lista irá representar o banco de dados;
+⦁	Criamos um bloco de código static na classe Banco, para que toda vez que aplicação for levantada crie-se o cadastro de duas empresas, sendo elas: Caelum e Alura. Exemplo:
+	static{
+		lista.add("Caelum");
+		}
+⦁	Criamos uma servlet capaz de ler a lista de empresas cadastradas (Banco).
+
+Capítulo 04 - Páginas dinâmicas com JSP.
+Nesse capítulo aprendemos que:
+⦁	Existe a específicação JSP, que com ela é capaz renderizar páginas HTML no lado do servidor. Podemos também criar os scriptlet, ou seja, escrever código java diretamente no HTML, por exemplo: 
+        <% out.println(NomeDaVariavel);%> ou
+        <% = NomeDaVariavel%> ou
+        <% System.out.println("Escrevendo msg no console!");%> 
+⦁	Aprendemos também que não é aconselhável utilizar Scriptlet;
+⦁	É possivel através de uma Servlet chamar uma JSP e ainda repassar para ela os dados da requisição. Exemplo para fazer isso:
+	RequestDispatcher rd = req.getRequestDispatcher("NomeDaJsp");
+	request.setAttribute("ApelidoDoAtributo", valorDoAtributo);
+	rd.forward(request, response);
+⦁	Podemos colocar e retirar dados na requisição com req.setAttribute e req.getAttribute. E a requisição está presente tanto na JSP quanto na Servlet
+
+Capítulo 05 - JSTL e Expression Language
+Nesse capítulo aprendemos:
+⦁	Conhecemos a Expression Language (EL), que é uma outra maneira de consultar e inserir dados na requisição (request). Usamos o ${empresa}, dessa forma estamos acessando o valor do atributo empresa, devemos lembrar que na Servlet tivemos que colocar o dado na request com o apelido empresa: request.setAttribuute("empresa", "uol");
+⦁	Aprendemos que com Expression Language e JSTL vamos eliminar o uso de Scriptlets, pois com JSTL podemos embutir lógica dentro da JSP sem escrever código Java, vamos usar apenas TAG's;
+⦁	JSTL é uma biblioteca, e o Tomcat não vem com ela, logo temos que importa-la no projeto (pasta WEB-INF -> lib) e em cada JSP indicar com import que vamos utiliza-la;
+⦁	O import do core JSTL na JSP: 
+	<% @taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+⦁	Exemplo de laço de repetição com JSTL:
+     	<c:forEach items="${empresas}" var="empresa">
+            <li>${empresa.nome}</li>
+        </c:forEach>
+⦁	Dentro da JSTL temos varias sub-bibliotecas, vamos utilizar o CORE que é responsavel por controlar fluxo (laços de repetição, verificação...) e vamos utilizar o FMT que serve para formatação de dados;
+⦁	Import de FMT JSTL na JSP:
+	<%@taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
+⦁	Aprendemos a utilizar a tag: <c:url value="/ApelidoDaServlet", essa tag sempre retorna o caminho completo da Servlet, ou seja, retorna o ROOT do projeto que nosso caso é gerenciador e /ApelidoDaServlet, ficando assim seu retorno: gerenciador/ApelidoDaServlet;
+⦁	Usando a tag <c:url> podemos deixar dinamico os redirecionamentos, pois caso alguem mude o valor de ROOT o fluxo não será alterado, para isso basta colocar de preferencia no topo da JSP:                  <c:url value="/novaEmpresa" var="linkServletNovaEmpresa"/>                        e depois  <form action="${linkServletNovaEmpresa}" method="post">;
+⦁	Aprendemos a usar a tag: <c:if test= "${not empty empresa}", nesse caso verifica se o atributo com apelido empresa da request não está vazia, se estiver então faça a determinada ação;
+⦁	Aprendemos que todo atributo que acessamos da request estando na Servlet vem em formato String, logo para trabalharmos com data vamos ter que fazer Parsing;
+⦁	Para fazer Parsing de String para Date vamos utilizar o objeto SimpleDateFormat. No seu construtor declaramos uma string com formato de queremos de datoa:                                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");          e depois utilizamos o metodo: sdf.parse("DataEmString") e seu retorno será uma data em Date:                                                                             Date dataAbertura = sdf.parse(paramDataEmpresa);
+
+Capítulo 06 - Redirecionando o fluxo
+Nesse capítulo aprendemos:
+⦁	O RequestDispatcher pode redirecionar para qualquer recurso, pode ser página HTML, CSS, JS, Servlet, JSP...);
+⦁	Se uma Servlet só atende o verbo POST (doPost) ela só pode redirecionar para outra Servlet que atende POST. Para corrigir isso basta a Servlet que irá receber o fluxo alterar o seu método doPost/doGet para o método service;
+⦁	Aprendemos alguns erros HTTP, 404 = Recurso não encontrado, 405 método HTTP não permitido, 500 = Erro no servidor, 300 = Fazer redirecionamento;
+⦁	O perigo de Servlet redirecionar para outra Servlet, pois acontece o erro do F5, que nada mais é que cada vez que a página for atualizada a request é lançada novamente, ou seja, você fez um cadastro de empresa, se apertar F5 você fará novamente e assim por diante...;
+⦁	Para resolver o erro do F5 uma Servlet pode devolver a resposta ao Cliente (Navegador) com a exigencia que o mesmo faça uma request, ou seja, você cadastrou a empresa a resposta dessa request será obrigar o navegador a chamar a request de listar empresas. Para isso usamod o método response.sendRedirect("apelidoDaServlet");
+⦁	Lembre-se redirecionamento Servlet para Servlet usaremos o "/", já para obrigar o cliente a realizar uma leitura não usaremos "/". Exemplo: 			           response.sendRedirect("apelidoDaServlet") request.getRequestDispatcher("/apelidoDaServlet");
+⦁	Se usarmos response.sendRedirect(...) o resultado será: 301 ou 302;
+⦁	Redirecionamento do lado de servidor = Servlet -> Servlet;
+⦁	Redirecionamento do lado cliente = Servlet -> Cliente -> Servlet;
+⦁	Redirecionamento do lado de usa request.getRequestDispatcher();
+⦁	Redirecionamento do lado cliente usa response.sendRedirect();
+
+Capítulo 07 - Completando o CRUD
+Nesse capítulo aprendemos:
+⦁	A fazer um CRUD completo;
+⦁	Fizemos a nossa simulçao de Banco atribuir um id para as empresas, para isso usamos um atributo Integer id Estatico (static) e antes de  adicionar uma empresa na lista a gente colocava o id na empresa;
+⦁	Criamos o metodo getEmpresa no banco (achar empresa pelo id);
+⦁	Criamos o metodo alteraEmpresa no banco (passamos os empresa com dados novos e atualizamos o cadastro da empresa antiga);
+⦁	Criamos o metodo deletaEmpresa no banco (apagava da lista o cadastro da empresa);
+⦁	Aprendemos que não podemos usar o foreach e no meio do loop apagar o registro da lista, dará erro 500, para isso devemos usar o Iterator ou então guardar a posição do item encontrado e após fim do loop manipular aquela posição registrada;
+⦁	Aprendemos que parar criar o Delete e Update basta por um link na listagem da empresa e esse link deve ter o atributo id;
+⦁	Podemos por um atributo com valor dinamico no link, exemplo:          <a href="alteraEmpresaForm?id=${empresa.id}">Alterar</a>;
+⦁	Para implementar o update temos que fazer 2 servlerts, uma para pegar os dados da empresa (dados antigos) e montar no formulário esses dados e a outra Servlet para reagir ao clicar no botao atualizar, ou seja, a segunda de fato irá atualizar os dados;
+⦁	Usar o <input type="hidden"> para o id no formulário de update.
+
+Capítulo 08 - Deploy da aplicação
+Nesse capítulo aprendemos:
+⦁	Aprendemos que antigamente não havia @WebServlet(urlPatterns="ApelidoServlet") e que essa vinculação de Servlet com um "Apelido"/URL era feita no arquivo web.xml;
+⦁	Aprendemos que uma Servlet pode ter mais de um apelido (responder a mais de um URL). Por exemplo:
+ <servlet>
+      <servlet-name>LES</servlet-name>
+      <servlet-class>br.com.alura.gerenciador.servlet.ListaEmpresasServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>LES</servlet-name>
+      <url-pattern>/listaEmpresas</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+      <servlet-name>LES</servlet-name>
+      <url-pattern>/empresas</url-pattern>
+  </servlet-mapping>
+ Ou:
+@WebServlet(urlPatterns= {"/listaEmpresas", "/empresas"})
+⦁	É no arquivo web.xml que definimos a página index, a que irá responder por localhost:8080/gerenciador (gerenciador = root do projeto);
+⦁	Descobrimos que quem cria as Servlet (já que nao damos new Servlet) é o Tomcat;
+⦁	O Tomcat por padrão é preguiçoso, ele só cria a nossa Servlet, ou seja, da new NomeDaServlet quando a mesma é chamada por um cliente (navegador);
+⦁	O escopo das Servlet é Singleton, ou seja, só há uma instancia de objeto de cada servlet, essa instancia é colocada em memoria e será a única a ser usada até o container morrer (servidor ser reiniciado);
+⦁	Podemos mudar o comportamento que a Servlet só é criada ao ser chamada, para ela ser criada quando o servidor Tomcar for iniciado, para isso basta colocar o atributo loadOnStartup=1 na anotação de URL, ex: @WebServlet(urlPatterns="/oi", loadOnStartup=1);
+⦁	Já que criamos apenas as classes e deixamo o Tomcat criar a instancia das Servlet podemos dizer que há uma inversão de controle, não somos nós que controlamos a criação do objeto de Servlet e sim o Tomcat. Inversão de Controle é um Padrão de Projeto muito utilizado por outros Frameworks como o Spring;
+⦁	Definição de Servlet: Objeto que podemos chamar através do protocolo HTTP, ou seja, um navegador chama o objeto Servlet. Quem permitirá isso será o Tomcat;
+⦁	Aprendemos a fazer o Deploy, ou seja, compactar todo conteudo (classes) do java em um único arquivo, e colocar esse arquivo compactado para rodar no servidor Tomcat;
+⦁	Aprendemos que classes normais do Java são compactadas em um arquivo .JAR e que projetos Web (jsp, servlet...) são compactados em arquivo .WAR;
+⦁	Para rodar o Tomcat junto com arquivo .WAR temos que rodar o Tomcat pelo terminal, para isso basta entrar na pasta do Tomcar e rodar o script startup.bat;
+⦁	Para não termos problemas de versões o Tomcat e o a classe java devem estar na mesma versão, para isso é ideal criar a variavel de ambiente JAVA_HOME apotando para a pasta do JDK e colocar na váriavel Path a pasta do JDK/bin, assim o Tomcat irá utilizar a versão do Java setada na váriavel;
+⦁	Passos para fazer o deploy:
+	1.	Descompactar o servidor Tomcat novamente (assim temos uma versão limpa);
+	2.	Exportar o projeto Java na extensão .WAR;
+	3.	Colocar o arquivo .WAR dento da pasta Tomcat->webapps
+	4.	Entrar na pasta do Tomca t-> bin -> e rodar o comando .startup
+⦁	Aprendemos que podemos configurar o Tomcat, para isso basta abrir como texto o arquivo Tomcat -> conf -> server.xml (Nele por exemplo podemos mudar a porta que rodará o Tomcat, se colocarmos somente 80 não vamos precisar digitar nada de porta no navegador!
+
+
+
+Iniando o curso: Java Servlet - Fundamentos da programação web Java
+
+Link do curso: https://cursos.alura.com.br/course/servlets-fundamentos-programacao-web-java/task/44911
+
+Repositório: https://github.com/RodrigoFrancoZup/JavaServlet
